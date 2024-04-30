@@ -6,11 +6,13 @@ import java.io.ObjectOutputStream;
 import java.io.FileInputStream;
 import java.io.ObjectInputStream;
 
+
 /**
- *  Connect 4 game implementation
- *  @author Catherine Anderson, Sherri WeitlHarms, Wistrom Herfordt
- * 4/29/2024
+ * Represents the Connect 4 game logic and state.
+ * Author: Wistrom Herfordt
+ * Date: 4/30/2024
  */
+
 public class Con4Game {
     private int rows;
     private int cols;
@@ -43,6 +45,13 @@ public class Con4Game {
         nextPlayer();
     }
 
+    /**
+     * @return rows
+     */
+    public int getRows() {
+        return rows;
+    }
+    
     public int getToken(int r, int c) {
         return gameArray[r][c];
     }
@@ -75,7 +84,7 @@ public class Con4Game {
      * @return
      */
     public boolean checkForWin() {
-        // Check horizontally
+        // Check horizontal
         for (int row = 0; row < rows; row++) {
             for (int col = 0; col < cols - 3; col++) {
                 if (gameArray[row][col] != -1 &&
@@ -133,10 +142,16 @@ public class Con4Game {
         return checkForWin() || isBoardFull();
     }
 
+   /*
+    *@return the currrent player
+    */
     public int getCurrentPlayer() {
         return currentPlayer;
     }
 
+    /**
+     * @return the game array 
+     */
     public int[][] getGameArray() {
         return gameArray;
     }
@@ -145,6 +160,10 @@ public class Con4Game {
         this.gameArray = gameArray;
     }
 
+   /**
+    * Saves game file
+    * @param file
+    */
     public void saveGame(File file) {
         try {
             FileOutputStream fileOut = new FileOutputStream(file);
@@ -161,7 +180,7 @@ public class Con4Game {
         try {
             FileInputStream fileIn = new FileInputStream(file);
             ObjectInputStream objectIn = new ObjectInputStream(fileIn);
-            Con4Game game = (Con4Game) objectIn.readObject();
+            Con4Game game = (Con4Game) objectIn.readObject(); //attempts to read and intialize the game 
             objectIn.close();
             fileIn.close();
             return game;
@@ -171,6 +190,9 @@ public class Con4Game {
         }
     }
 
+    /**
+     * resets game state (wipes board)
+     */
     public void restartGame() {
         gameArray = new int[rows][cols];
         for (int row = 0; row < rows; row++) {

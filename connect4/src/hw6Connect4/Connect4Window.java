@@ -6,40 +6,36 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
+import javafx.scene.control.Label; 
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.VBox;
+import javafx.geometry.Pos;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import java.io.File;
-import java.util.HashMap;
-import java.util.Map;
+
 /**
- * Connect 4 game implementation
- *  @author  Wistrom Herfordt 
- * 4/23/2024
- * This code provides the Window View class in JavaFX needed implement the
- * the connect four assignment.
+ * The main application window for the Connect 4 game.
+ * Handles game setup, menu actions, and UI components.
+ * Author: Wistrom Herfordt
+ * Date: 4/30/2024
  */
 
 public class Connect4Window extends Application {
     private Con4Game game;
     private Connect4Pane connect4Pane;
     private BorderPane root;
-    private Map<String, Integer> bestScores;
+    private Label connect4Label; 
 
     public static void main(String[] args) {
         launch(args);
     }
 
     @Override
-    /*
-     *This initiliazes the game and creates the menu (adds all the menu items into the menu bar) 
-     */
     public void start(Stage primaryStage) {
         game = new Con4Game(10, 10); 
         connect4Pane = new Connect4Pane(game);
-        bestScores = new HashMap<>();
        
-        //Creation of a bunch of menu items 
         MenuItem saveGameMenuItem = new MenuItem("Save Game");
         saveGameMenuItem.setOnAction(e -> saveGame(primaryStage));
 
@@ -52,50 +48,35 @@ public class Connect4Window extends Application {
         MenuItem aboutGameMenuItem = new MenuItem("About");
         aboutGameMenuItem.setOnAction(e -> showAboutDialog());
         
-        MenuItem bestScoresMenuItem = new MenuItem("Best Scores");
-        bestScoresMenuItem.setOnAction(e -> showBestScores());
-
-
         Menu gameMenu = new Menu("Game");
-        gameMenu.getItems().addAll(saveGameMenuItem, loadGameMenuItem, restartGameMenuItem, bestScoresMenuItem); //adds the load, save, and restart button to the game menu 
+        gameMenu.getItems().addAll(saveGameMenuItem, loadGameMenuItem, restartGameMenuItem); 
         
         Menu helpMenu = new Menu("Help");
-        helpMenu.getItems().addAll(aboutGameMenuItem); //adds the about button to the help menu 
+        helpMenu.getItems().addAll(aboutGameMenuItem); 
 
         MenuBar menuBar = new MenuBar();
-        menuBar.getMenus().addAll(gameMenu, helpMenu);  //adds the game menu and help menu to the bar 
+        menuBar.getMenus().addAll(gameMenu, helpMenu);  
 
         root = new BorderPane();
         root.setTop(menuBar);
         root.setCenter(connect4Pane);
         
+        // Initialize and add "CONNECT 4!" label
+        connect4Label = new Label("CONNECT 4!");
+        connect4Label.setStyle("-fx-font-size: 24; -fx-font-weight: bold;");
+        VBox bottomBox = new VBox(connect4Label);
+        bottomBox.setAlignment(Pos.CENTER);
+        root.setBottom(bottomBox);
   
-        Scene scene = new Scene(root, 800, 600);
+        Scene scene = new Scene(root);
         primaryStage.setScene(scene);
         primaryStage.setTitle("Connect 4");
+        primaryStage.setResizable(false);
         primaryStage.show();
     }
 
-    public void addAScore(String playerName) {
-    	bestScores.put(playerName, bestScores.getOrDefault(playerName, 0) + 1);
-    }
     
-    private void showBestScores() {
-    	Alert alert = new Alert(Alert.AlertType.INFORMATION);
-    	alert.setTitle("Top Scores");
-    	alert.setHeaderText(null);
-    	
-    	StringBuilder scoresMessage = new StringBuilder();
-    	for (Map.Entry<String, Integer> entry : bestScores.entrySet()) {
-    		 scoresMessage.append(entry.getKey()).append(": ").append(entry.getValue()).append(" wins\n");
-    	}
-    	alert.setContentText(scoresMessage.toString());
-    	alert.showAndWait();
-    }
     
-    /**
-     * save a game state to a file
-     */
     private void saveGame(Stage primaryStage) {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Save Game");
@@ -105,10 +86,6 @@ public class Connect4Window extends Application {
         }
     }
 
-    /**
-     * load a game state from a prev. saved file
-     * @param primaryStage
-     */
     private void loadGame(Stage primaryStage) {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Load Game");
@@ -123,16 +100,11 @@ public class Connect4Window extends Application {
         }
     }
 
-    /**
-     * restarts game 
-     * @param primaryStage
-     */
     private void restartGame(Stage primaryStage) {
         game.restartGame();
         connect4Pane = new Connect4Pane(game);
         root.setCenter(connect4Pane);
     }
-    
     
     private void showAlert(String title, String content) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
@@ -142,14 +114,11 @@ public class Connect4Window extends Application {
         alert.showAndWait();
     }
     
-    /**
-     *The about menu code, sets the alert to one that is info related  
-     */
     private void showAboutDialog() {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle("About Connect 4 Game");
         alert.setHeaderText(null);
-        alert.setContentText("Connect 4 Game\nThis program allows you to play the Connect 4 game.\nby Wistrom Herfordt");
+        alert.setContentText("Connect 4 Game\nThis program allows you to play the Connect 4 game.\nMatch 4 tokens together to win.\nby Wistrom Herfordt");
         alert.showAndWait();
     }
 }
