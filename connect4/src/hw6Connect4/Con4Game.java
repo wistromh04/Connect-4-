@@ -75,7 +75,7 @@ public class Con4Game {
      * @return
      */
     public boolean checkForWin() {
-        // Check horizontally
+        // Check horizontal
         for (int row = 0; row < rows; row++) {
             for (int col = 0; col < cols - 3; col++) {
                 if (gameArray[row][col] != -1 &&
